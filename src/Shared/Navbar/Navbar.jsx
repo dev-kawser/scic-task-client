@@ -65,7 +65,7 @@ const Navbar = () => {
                 <div
                     ref={dropDownMenuRef}
                     onClick={() => setDropDownState(!dropDownState)}
-                    className="md:hidden flex items-center"
+                    className="md:hidden flex items-center cursor-pointer"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +77,7 @@ const Navbar = () => {
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="cursor-pointer text-gray-800"
+                        className="text-gray-800"
                     >
                         <line x1="4" x2="20" y1="12" y2="12" />
                         <line x1="4" x2="20" y1="6" y2="6" />
@@ -85,9 +85,10 @@ const Navbar = () => {
                     </svg>
                 </div>
 
+
                 {/* Mobile Dropdown Menu */}
                 {dropDownState && (
-                    <ul className="absolute right-2 top-12 mt-4 w-48 bg-gray-800 text-white rounded-lg shadow-lg z-10 md:hidden">
+                    <ul className="absolute right-0 top-full mt-2 w-48 bg-gray-800 text-white rounded-lg shadow-lg z-50 md:hidden">
                         <li>
                             <Link to="/" className={`block px-6 py-3 ${isActive('/')}`}>Home</Link>
                         </li>
@@ -99,19 +100,20 @@ const Navbar = () => {
                         </li>
                         {
                             user ?
-                                <li className="block px-6 py-3 btn text-red-500 hover:text-red-700 font-semibold cursor-pointer" onClick={logOut} >Logout</li>
+                                <li className="block px-6 py-3 text-red-500 hover:text-red-700 font-semibold cursor-pointer" onClick={logOut}>Logout</li>
                                 :
                                 <>
                                     <li>
-                                        <Link to="/login" className={`hover:text-gray-600 ${isActive('/login')}`}>Login</Link>
+                                        <Link to="/login" className={`block px-6 py-3 ${isActive('/login')}`}>Login</Link>
                                     </li>
                                     <li>
-                                        <Link to="/register" className={`hover:text-gray-600 ${isActive('/register')}`}>Register</Link>
+                                        <Link to="/register" className={`block px-6 py-3 ${isActive('/register')}`}>Register</Link>
                                     </li>
                                 </>
                         }
                     </ul>
                 )}
+
             </nav>
         </div>
     );
