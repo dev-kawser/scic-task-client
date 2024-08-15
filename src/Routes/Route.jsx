@@ -7,6 +7,7 @@ import AddProduct from "../Pages/AddProduct/AddProduct";
 import Login from "../Pages/Login/Login";
 import Register from "../Pages/Register/Register";
 import PrivateRoute from "./PrivateRoute";
+import Products from "../Pages/Products/Products";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
         element: <PrivateRoute>
           <AddProduct></AddProduct>
         </PrivateRoute>
+      },
+      {
+        path: "/products",
+        element: <Products></Products>
       },
       {
         path: "/login",
