@@ -97,12 +97,19 @@ const Navbar = () => {
                         <li>
                             <Link to="/addProduct" className={`block px-6 py-3 ${isActive('/addProduct')}`}>Add Product</Link>
                         </li>
-                        <li>
-                            <Link to="/login" className={`block px-6 py-3 ${isActive('/login')}`}>Login</Link>
-                        </li>
-                        <li>
-                            <Link to="/register" className={`block px-6 py-3 ${isActive('/register')}`}>Register</Link>
-                        </li>
+                        {
+                            user ?
+                                <li className="block px-6 py-3 btn text-red-500 hover:text-red-700 font-semibold cursor-pointer" onClick={logOut} >Logout</li>
+                                :
+                                <>
+                                    <li>
+                                        <Link to="/login" className={`hover:text-gray-600 ${isActive('/login')}`}>Login</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/register" className={`hover:text-gray-600 ${isActive('/register')}`}>Register</Link>
+                                    </li>
+                                </>
+                        }
                     </ul>
                 )}
             </nav>

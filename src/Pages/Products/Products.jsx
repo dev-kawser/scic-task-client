@@ -48,7 +48,17 @@ const Products = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/products?page=${currentPage}&limit=10`);
+            const queryParams = new URLSearchParams({
+                page: currentPage,
+                limit: 9,
+                search: searchTerm,
+                category: categoryFilter,
+                brand: brandFilter,
+                priceRange: priceRangeFilter,
+                sort: sortOption
+            });
+
+            const response = await fetch(`http://localhost:5000/products?${queryParams}`);
             const data = await response.json();
             setProducts(data.products);
             setFilteredProducts(data.products);
@@ -61,7 +71,7 @@ const Products = () => {
     useEffect(() => {
         fetchProducts();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPage]);
+    }, [currentPage, searchTerm, categoryFilter, brandFilter, priceRangeFilter, sortOption]);
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
@@ -183,16 +193,16 @@ const Products = () => {
                                     <h3 className="text-lg font-semibold mb-2">Price Range</h3>
                                     <select onChange={e => setPriceRangeFilter(e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50">
                                         <option value="">Select Price Range</option>
-                                        <option value="1-10">$1-10</option>
-                                        <option value="10-20">$10-20</option>
-                                        <option value="20-30">$20-30</option>
-                                        <option value="30-40">$30-40</option>
-                                        <option value="40-50">$40-50</option>
-                                        <option value="50-60">$50-60</option>
-                                        <option value="60-70">$60-70</option>
-                                        <option value="70-80">$70-80</option>
-                                        <option value="80-90">$80-90</option>
-                                        <option value="90-100">$90-100</option>
+                                        <option value="100-200">$100-200</option>
+                                        <option value="200-300">$200-300</option>
+                                        <option value="300-400">$300-400</option>
+                                        <option value="400-500">$400-500</option>
+                                        <option value="500-600">$500-600</option>
+                                        <option value="600-700">$600-700</option>
+                                        <option value="700-800">$700-800</option>
+                                        <option value="800-900">$800-900</option>
+                                        <option value="900-1000">$900-1000</option>
+                                        <option value="1000-1100">$1000-1100</option>
                                     </select>
                                 </div>
                             </div>
