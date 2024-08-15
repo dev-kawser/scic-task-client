@@ -1,8 +1,33 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-
 const AddProduct = () => {
+  const categories = [
+    'Electronics',
+    'Clothing',
+    'Home Appliances',
+    'Books',
+    'Toys',
+    'Furniture',
+    'Beauty & Personal Care',
+    'Sports & Outdoors',
+    'Automotive',
+    'Food & Beverages'
+  ];
+
+  const brands = [
+    'Apple',
+    'Nike',
+    'Samsung',
+    'Sony',
+    'LG',
+    'Adidas',
+    'Canon',
+    'Dell',
+    'Microsoft',
+    'Bosch'
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -12,6 +37,7 @@ const AddProduct = () => {
       description: e.target.description.value,
       price: parseFloat(e.target.price.value),
       category: e.target.category.value,
+      brand: e.target.brand.value,
       ratings: parseFloat(e.target.ratings.value),
       createdAt: new Date().toISOString().split('T')[0],
     };
@@ -21,7 +47,7 @@ const AddProduct = () => {
       toast.success('Product added successfully!');
       e.target.reset();
     } catch (error) {
-        toast.error(error);
+      toast.error(error);
     }
   };
 
@@ -70,12 +96,30 @@ const AddProduct = () => {
 
         <div>
           <label className="block text-gray-700">Category</label>
-          <input
-            type="text"
+          <select
             name="category"
             required
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select a category</option>
+            {categories.map(category => (
+              <option key={category} value={category}>{category}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-gray-700">Brand</label>
+          <select
+            name="brand"
+            required
+            className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select a brand</option>
+            {brands.map(brand => (
+              <option key={brand} value={brand}>{brand}</option>
+            ))}
+          </select>
         </div>
 
         <div>

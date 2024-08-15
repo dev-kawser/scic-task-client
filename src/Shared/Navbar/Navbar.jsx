@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../ContextProvider/AuthProvider';
 
 const Navbar = () => {
-
     const { user, logOut } = useContext(AuthContext);
+    const location = useLocation();
 
     const [dropDownState, setDropDownState] = useState(false);
     const dropDownMenuRef = useRef();
@@ -23,6 +23,9 @@ const Navbar = () => {
         };
     }, []);
 
+    // Helper function to determine if a link is active
+    const isActive = (path) => location.pathname === path ? 'text-blue-600' : 'hover:text-gray-600';
+
     return (
         <div className="bg-white shadow-md sticky top-0 z-50">
             <nav className="flex items-center justify-between max-w-7xl mx-auto px-4 py-3">
@@ -34,27 +37,25 @@ const Navbar = () => {
                 {/* Desktop Menu */}
                 <ul className="hidden md:flex space-x-8 font-medium text-gray-800">
                     <li>
-                        <Link to="/" className="hover:text-gray-600">Home</Link>
+                        <Link to="/" className={`hover:text-gray-600 ${isActive('/')}`}>Home</Link>
                     </li>
                     <li>
-                        <Link to="/products" className="hover:text-gray-600">Products</Link>
+                        <Link to="/products" className={`hover:text-gray-600 ${isActive('/products')}`}>Products</Link>
                     </li>
                     <li>
-                        <Link to="/addProduct" className="hover:text-gray-600">Add Product</Link>
+                        <Link to="/addProduct" className={`hover:text-gray-600 ${isActive('/addProduct')}`}>Add Product</Link>
                     </li>
 
                     {
                         user ?
-                            <li className="text-red-500 hover:text-red-700 font-semibold btn cursor-pointer" onClick={logOut} >Logout</li>
-
-
+                            <li className="text-red-500 hover:text-red-700 font-semibold border-red-500 border-l-2 pl-2 btn cursor-pointer" onClick={logOut} >Logout</li>
                             :
                             <>
                                 <li>
-                                    <Link to="/login" className="hover:text-gray-600">Login</Link>
+                                    <Link to="/login" className={`hover:text-gray-600 ${isActive('/login')}`}>Login</Link>
                                 </li>
                                 <li>
-                                    <Link to="/register" className="hover:text-gray-600">Register</Link>
+                                    <Link to="/register" className={`hover:text-gray-600 ${isActive('/register')}`}>Register</Link>
                                 </li>
                             </>
                     }
@@ -88,19 +89,19 @@ const Navbar = () => {
                 {dropDownState && (
                     <ul className="absolute right-2 top-12 mt-4 w-48 bg-gray-800 text-white rounded-lg shadow-lg z-10 md:hidden">
                         <li>
-                            <Link to="/" className="block px-6 py-3 hover:bg-gray-700">Home</Link>
+                            <Link to="/" className={`block px-6 py-3 ${isActive('/')}`}>Home</Link>
                         </li>
                         <li>
-                            <Link to="/products" className="block px-6 py-3 hover:bg-gray-700">Products</Link>
+                            <Link to="/products" className={`block px-6 py-3 ${isActive('/products')}`}>Products</Link>
                         </li>
                         <li>
-                            <Link to="/addProduct" className="block px-6 py-3 hover:bg-gray-700">Add Product</Link>
+                            <Link to="/addProduct" className={`block px-6 py-3 ${isActive('/addProduct')}`}>Add Product</Link>
                         </li>
                         <li>
-                            <Link to="/login" className="block px-6 py-3 hover:bg-gray-700">Login</Link>
+                            <Link to="/login" className={`block px-6 py-3 ${isActive('/login')}`}>Login</Link>
                         </li>
                         <li>
-                            <Link to="/register" className="block px-6 py-3 hover:bg-gray-700">Register</Link>
+                            <Link to="/register" className={`block px-6 py-3 ${isActive('/register')}`}>Register</Link>
                         </li>
                     </ul>
                 )}

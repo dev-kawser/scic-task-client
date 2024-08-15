@@ -1,9 +1,38 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon, RefreshIcon, FilterIcon, XIcon } from '@heroicons/react/solid';
+import { ChevronLeftIcon, ChevronRightIcon, RefreshIcon, FilterIcon } from '@heroicons/react/solid';
 
 const Products = () => {
+
+
     const [products, setProducts] = useState([]);
-    const [allProducts, setAllProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [categories] = useState([
+        'Electronics',
+        'Clothing',
+        'Home Appliances',
+        'Books',
+        'Toys',
+        'Furniture',
+        'Beauty & Personal Care',
+        'Sports & Outdoors',
+        'Automotive',
+        'Food & Beverages'
+    ]);
+    const [brands] = useState([
+        'Apple',
+        'Nike',
+        'Samsung',
+        'Sony',
+        'LG',
+        'Adidas',
+        'Canon',
+        'Dell',
+        'Microsoft',
+        'Bosch'
+    ]);
+
+
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
@@ -18,11 +47,15 @@ const Products = () => {
     });
 
     const fetchProducts = async () => {
-        const response = await fetch(`http://localhost:5000/products?page=${currentPage}&limit=10`);
-        const data = await response.json();
-        setProducts(data.products);
-        setAllProducts(data.products); // Save all products to reset later
-        setTotalPages(data.totalPages);
+        try {
+            const response = await fetch(`http://localhost:5000/products?page=${currentPage}&limit=10`);
+            const data = await response.json();
+            setProducts(data.products);
+            setFilteredProducts(data.products);
+            setTotalPages(data.totalPages);
+        } catch (error) {
+            console.error('Failed to fetch products', error);
+        }
     };
 
     useEffect(() => {
@@ -67,24 +100,32 @@ const Products = () => {
             brand: false,
             price: false,
         });
-        fetchProducts(); // Fetch all products again
+        fetchProducts(); // Reset product list
     };
 
-    const filteredProducts = allProducts
-        .filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()))
-        .filter(product => !categoryFilter || product.category === categoryFilter)
-        .filter(product => !brandFilter || product.brand === brandFilter)
-        .filter(product => {
-            if (!priceRangeFilter) return true;
-            const [min, max] = priceRangeFilter.split('-').map(Number);
-            return product.price >= min && product.price <= max;
-        })
-        .sort((a, b) => {
-            if (sortOption === 'price-asc') return a.price - b.price;
-            if (sortOption === 'price-desc') return b.price - a.price;
-            if (sortOption === 'date-newest') return new Date(b.dateAdded) - new Date(a.dateAdded);
-            return 0;
-        });
+    useEffect(() => {
+        const applyFilters = () => {
+            let result = products
+                .filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()))
+                .filter(product => !categoryFilter || product.category === categoryFilter)
+                .filter(product => !brandFilter || product.brand === brandFilter)
+                .filter(product => {
+                    if (!priceRangeFilter) return true;
+                    const [min, max] = priceRangeFilter.split('-').map(Number);
+                    return product.price >= min && product.price <= max;
+                })
+                .sort((a, b) => {
+                    if (sortOption === 'price-asc') return a.price - b.price;
+                    if (sortOption === 'price-desc') return b.price - a.price;
+                    if (sortOption === 'date-newest') return new Date(b.dateAdded) - new Date(a.dateAdded);
+                    return 0;
+                });
+
+            setFilteredProducts(result);
+        };
+
+        applyFilters();
+    }, [products, searchTerm, sortOption, categoryFilter, brandFilter, priceRangeFilter]);
 
     return (
         <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -95,14 +136,14 @@ const Products = () => {
                             type="text"
                             placeholder="Search products..."
                             value={searchTerm}
-                            onChange={handleSearch}
+                            onChange={e => setSearchTerm(e.target.value)}
                             className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 bg-gray-100"
                         />
                         <FilterIcon className="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-500" />
                     </div>
                     <select
                         value={sortOption}
-                        onChange={handleSort}
+                        onChange={e => setSortOption(e.target.value)}
                         className="w-full sm:w-1/4 p-4 border border-gray-300 rounded-lg shadow-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-600"
                     >
                         <option value="">Sort By</option>
@@ -112,7 +153,7 @@ const Products = () => {
                     </select>
                     <div className="relative w-full sm:w-1/4">
                         <button
-                            onClick={() => handleFilterToggle('category')}
+                            onClick={() => setShowFilters(prev => ({ ...prev, category: !prev.category }))}
                             className="w-full p-4 border border-gray-300 rounded-lg shadow-sm bg-gray-100 text-gray-700 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-600"
                         >
                             <span>Categorization</span>
@@ -121,26 +162,26 @@ const Products = () => {
                         {showFilters.category && (
                             <div className="absolute left-0 mt-2 bg-white p-6 border border-gray-300 rounded-lg shadow-lg w-full z-10">
                                 <div className="mb-4">
-                                    <h3 className="text-lg font-semibold mb-2">Category Name</h3>
-                                    <select onChange={handleCategoryFilter} className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50">
+                                    <h3 className="text-lg font-semibold mb-2">Category</h3>
+                                    <select onChange={e => setCategoryFilter(e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50">
                                         <option value="">Select Category</option>
-                                        <option value="category1">Category 1</option>
-                                        <option value="category2">Category 2</option>
-                                        {/* Add more categories as needed */}
+                                        {categories.map(category => (
+                                            <option key={category} value={category}>{category}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="mb-4">
-                                    <h3 className="text-lg font-semibold mb-2">Brand Name</h3>
-                                    <select onChange={handleBrandFilter} className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50">
+                                    <h3 className="text-lg font-semibold mb-2">Brand</h3>
+                                    <select onChange={e => setBrandFilter(e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50">
                                         <option value="">Select Brand</option>
-                                        <option value="brand1">Brand 1</option>
-                                        <option value="brand2">Brand 2</option>
-                                        {/* Add more brands as needed */}
+                                        {brands.map(brand => (
+                                            <option key={brand} value={brand}>{brand}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="mb-4">
                                     <h3 className="text-lg font-semibold mb-2">Price Range</h3>
-                                    <select onChange={(e) => handlePriceRangeFilter(e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50">
+                                    <select onChange={e => setPriceRangeFilter(e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50">
                                         <option value="">Select Price Range</option>
                                         <option value="1-10">$1-10</option>
                                         <option value="10-20">$10-20</option>
@@ -161,7 +202,18 @@ const Products = () => {
 
                 <div className="flex mb-6">
                     <button
-                        onClick={resetFilters}
+                        onClick={() => {
+                            setSearchTerm('');
+                            setCategoryFilter('');
+                            setBrandFilter('');
+                            setPriceRangeFilter('');
+                            setShowFilters({
+                                category: false,
+                                brand: false,
+                                price: false,
+                            });
+                            fetchProducts();
+                        }}
                         className="px-6 py-3 bg-red-600 text-white rounded-lg shadow-md flex items-center space-x-2 hover:bg-red-700 transition-colors duration-300"
                     >
                         <RefreshIcon className="w-5 h-5" />
@@ -197,7 +249,7 @@ const Products = () => {
                             </div>
                             <p className="text-gray-900 font-semibold mb-2">Price: ${product.price.toFixed(2)}</p>
                             <p className="text-gray-600 text-sm mb-1">Category: {product.category}</p>
-                            <p className="text-gray-400 text-xs">Date Added: {new Date(product.dateAdded).toLocaleDateString()}</p>
+                            <p className="text-gray-400 text-xs">Date Added: {product.createdAt}</p>
                         </div>
                     ))}
                 </div>
@@ -224,6 +276,7 @@ const Products = () => {
             </div>
         </div>
     );
+
 };
 
 export default Products;
