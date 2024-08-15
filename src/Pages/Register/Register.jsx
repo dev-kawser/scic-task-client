@@ -23,7 +23,7 @@ const Register = () => {
     const onSubmit = (data) => {
         const { email, password, userName, photoUrl } = data;
 
-        const regex = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+        const regex = /^(?=.*[a-z]).{6,}$/;
         if (!regex.test(password)) {
             setError("Password should have one uppercase, one lowercase, and at least 6 characters.");
             return;

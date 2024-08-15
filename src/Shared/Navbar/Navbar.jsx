@@ -1,7 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../ContextProvider/AuthProvider';
 
 const Navbar = () => {
+
+    const { user, logOut } = useContext(AuthContext);
+
     const [dropDownState, setDropDownState] = useState(false);
     const dropDownMenuRef = useRef();
 
@@ -24,7 +28,7 @@ const Navbar = () => {
             <nav className="flex items-center justify-between max-w-7xl mx-auto px-4 py-3">
                 {/* Brand Logo */}
                 <Link to="/" className="text-2xl font-semibold text-gray-800 hover:text-gray-600">
-                ProductPrism
+                    ProductPrism
                 </Link>
 
                 {/* Desktop Menu */}
@@ -38,12 +42,22 @@ const Navbar = () => {
                     <li>
                         <Link to="/addProduct" className="hover:text-gray-600">Add Product</Link>
                     </li>
-                    <li>
-                        <Link to="/login" className="hover:text-gray-600">Login</Link>
-                    </li>
-                    <li>
-                        <Link to="/register" className="hover:text-gray-600">Register</Link>
-                    </li>
+
+                    {
+                        user ?
+                            <li className="text-red-500 hover:text-red-700 font-semibold btn cursor-pointer" onClick={logOut} >Logout</li>
+
+
+                            :
+                            <>
+                                <li>
+                                    <Link to="/login" className="hover:text-gray-600">Login</Link>
+                                </li>
+                                <li>
+                                    <Link to="/register" className="hover:text-gray-600">Register</Link>
+                                </li>
+                            </>
+                    }
                 </ul>
 
                 {/* Mobile Menu Toggle */}
