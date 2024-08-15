@@ -13,7 +13,7 @@ const AddProduct = () => {
       price: parseFloat(e.target.price.value),
       category: e.target.category.value,
       ratings: parseFloat(e.target.ratings.value),
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString().split('T')[0],
     };
 
     try {
