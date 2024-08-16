@@ -43,7 +43,7 @@ const AddProduct = () => {
     };
 
     try {
-      await axios.post('http://localhost:5000/products', formData);
+      await axios.post('https://new-task-server-kappa.vercel.app/products', formData);
       toast.success('Product added successfully!');
       e.target.reset();
     } catch (error) {

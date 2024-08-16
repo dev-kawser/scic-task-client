@@ -58,7 +58,7 @@ const Products = () => {
                 sort: sortOption
             });
 
-            const response = await fetch(`http://localhost:5000/products?${queryParams}`);
+            const response = await fetch(`https://new-task-server-kappa.vercel.app/products?${queryParams}`);
             const data = await response.json();
             setProducts(data.products);
             setFilteredProducts(data.products);
